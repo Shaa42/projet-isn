@@ -45,5 +45,10 @@ class Player():
 
 if __name__ == "__main__":
     test_Player = Player()
-    ressources = test_Player.get_resources()
-    print(ressources)
+    water, wood, food = test_Player.get_resources()
+    print(f"Water: {water}, Wood: {wood}, Food: {food}")
+    test_Player.add_water(5)
+    test_Player.add_wood(3)
+    test_Player.add_food(2)
+    water, wood, food = test_Player.get_resources()
+    print(f"Water: {water}, Wood: {wood}, Food: {food}")
