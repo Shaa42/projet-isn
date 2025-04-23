@@ -11,6 +11,7 @@ class Player():
             "food" : food
         }
     
+    
     # Methods to give items to the player
     def add_water(self, amount) -> None:
         self.dic_resources["water"] += amount
@@ -20,6 +21,7 @@ class Player():
     
     def add_food(self, amount) -> None:
         self.dic_resources["food"] += amount
+        
         
     # Methods to retrieve data
     def get_water(self) -> int:
@@ -31,13 +33,13 @@ class Player():
     def get_food(self) -> int:
         return self.dic_resources["food"]
 
-    
     def get_resources(self) -> tuple[int, int, int]:
         water = self.get_water()
         wood = self.get_wood()
         food = self.get_food()
         
         return(water, wood, food)
+    
     
     # Debug/Printing methods
 
