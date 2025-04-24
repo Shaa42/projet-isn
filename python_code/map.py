@@ -10,12 +10,14 @@ class Node:
         
         self.dic_resources : dict[str, int] = {
             "water" : water,
-            "wood" : wood,
-            "food" : food
+            "wood"  : wood,
+            "food"  : food
         }
         
-        self.events = events # to update with event class
+        self.events  = events  # to update with event class
         self.weather = weather # to update with weather class
+        
+        self.visited : bool = False
     
     def __str__(self):
         """
@@ -66,9 +68,9 @@ if __name__ == "__main__":
     # Debug
     game_map = Map()
     origin_node = Node("map0", 0, 0, 0)
-    first_node = Node("map1", 0, 1, 2)
+    first_node  = Node("map1", 0, 1, 2)
     second_node = Node("map2", 0, 0, 3)
-    third_node = Node("map3", 1, 1, 1)
+    third_node  = Node("map3", 1, 1, 1)
     fourth_node = Node("map4", 5, 0, 0)
     
     game_map.add_node(origin_node, first_node)

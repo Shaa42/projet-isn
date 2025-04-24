@@ -7,8 +7,8 @@ class Player():
     def __init__(self, health:int = 50, hunger:int = 5, water:int = 0, wood:int = 0, food:int = 0) -> None:
         self.dic_resources : dict[str, int] = {
             "water" : water,
-            "wood" : wood,
-            "food" : food
+            "wood"  : wood,
+            "food"  : food
         }
         
         self.health = health
