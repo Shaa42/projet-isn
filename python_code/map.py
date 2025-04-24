@@ -43,7 +43,7 @@ class Map:
             _string += f"{key} -> {value}\n"
         return _string
         
-    def add_node(self, node1 : Node, node2 : Node):
+    def add_node(self, node1:Node, node2:Node):
         """
         Link node1 and node2
         """
