@@ -1,10 +1,12 @@
+from map import Node
+
 class Player():
     """
     Class representing the player with its resources and its position.
     """
     # To add : Player's position as a node of the map's graph
     
-    def __init__(self, health:int = 50, hunger:int = 5, water:int = 0, wood:int = 0, food:int = 0) -> None: # add position
+    def __init__(self, health:int = 50, hunger:int = 5, water:int = 0, wood:int = 0, food:int = 0, position:Node = None) -> None: # add position
         self.dic_resources : dict[str, int] = {
             "water" : water,
             "wood" : wood,
@@ -13,14 +15,14 @@ class Player():
         
         self.health = health
         self.hunger = hunger
+        self.position = position
         
     def __str__(self) -> str:
-        desc:str = f"The player's ressources : {self.dic_resources}\nPlayer's health : {self.health}\nPlayer's hunger : {self.hunger}"
+        desc:str = f"The player's ressources : {self.dic_resources}\nPlayer's health : {self.health}\nPlayer's hunger : {self.hunger}\nPlayer's position : {self.position}"
         return desc
     
     
     # Methods to give items to the player
-    # Amount can be negative
     def add_water(self, amount:int) -> None:
         self.dic_resources["water"] += amount
     
@@ -35,7 +37,26 @@ class Player():
         
     def add_hunger(self, amount:int) -> None:
         self.hunger += amount
+    
+    # Methods to remove items from the player
+    def remove_water(self, amount:int) -> None:
+        self.dic_resources["water"] -= amount
+    
+    def remove_wood(self, amount:int) -> None:
+        self.dic_resources["wood"] -= amount
+    
+    def remove_food(self, amount:int) -> None:
+        self.dic_resources["food"] -= amount
         
+    def remove_health(self, amount:int) -> None:
+        self.health -= amount
+        
+    def remove_hunger(self, amount:int) -> None:
+        self.hunger -= amount
+        
+    # Set the position of the player
+    def set_position(self, position:Node) -> None:
+        self.position = position
         
     # Methods to retrieve data
     def get_water(self) -> int:
@@ -59,6 +80,9 @@ class Player():
     
     def get_hunger(self) -> int:
         return self.hunger
+
+    def get_position(self) -> Node:
+        return self.position
     
     
     # Debug/Printing methods
