@@ -30,6 +30,8 @@ class Node:
         """
         return f"{self.name}"
 
+
+
 class Map:
     """
     An undiricted graph using the Node class
@@ -93,3 +95,4 @@ if __name__ == "__main__":
     game_map.add_node(first_node, fourth_node)
     
     print(game_map)
+    print(game_map.dict_map[origin_node])
