@@ -10,11 +10,11 @@ class Node:
         
         self.dic_resources : dict[str, int] = {
             "water" : water,
-            "wood" : wood,
-            "food" : food
+            "wood"  : wood,
+            "food"  : food
         }
         
-        self.events = events # to update with event class
+        self.events  = events # to update with event class
         self.weather = weather # to update with weather class
     
     def __str__(self):
@@ -39,7 +39,7 @@ class Map:
         
     def __str__(self):
         _string = ""
-        for key, value in game_map.dict_map.items():
+        for key, value in self.dict_map.items():
             _string += f"{key} -> {value}\n"
         return _string
         
@@ -59,6 +59,21 @@ class Map:
             self.dict_map[node2].append(node1)
         else :
             self.dict_map[node2] = [node1]
+        
+    def node_exists(self, node:Node) -> bool:
+        """
+        Check if the node exists in the map
+        """
+        return node in self.dict_map.keys()
+    
+    def node_neighbors(self, node:Node) -> list[Node]:
+        """
+        Return the neighbors of the node
+        """
+        if self.node_exists(node):
+            return self.dict_map[node]
+        else:
+            return []
             
             
 if __name__ == "__main__":
@@ -66,9 +81,9 @@ if __name__ == "__main__":
     # Debug
     game_map = Map()
     origin_node = Node("map0", 0, 0, 0)
-    first_node = Node("map1", 0, 1, 2)
+    first_node  = Node("map1", 0, 1, 2)
     second_node = Node("map2", 0, 0, 3)
-    third_node = Node("map3", 1, 1, 1)
+    third_node  = Node("map3", 1, 1, 1)
     fourth_node = Node("map4", 5, 0, 0)
     
     game_map.add_node(origin_node, first_node)
