@@ -4,7 +4,7 @@ class Player():
     """
     # To add : Player's position as a node of the map's graph
     
-    def __init__(self, health:int = 50, hunger:int = 5, water:int = 0, wood:int = 0, food:int = 0) -> None:
+    def __init__(self, health:int = 50, hunger:int = 5, water:int = 0, wood:int = 0, food:int = 0) -> None: # add position
         self.dic_resources : dict[str, int] = {
             "water" : water,
             "wood" : wood,
@@ -13,6 +13,10 @@ class Player():
         
         self.health = health
         self.hunger = hunger
+        
+    def __str__(self) -> str:
+        desc:str = f"The player's ressources : {self.dic_resources}\nPlayer's health : {self.health}\nPlayer's hunger : {self.hunger}"
+        return desc
     
     
     # Methods to give items to the player
