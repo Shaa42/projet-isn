@@ -1,5 +1,5 @@
 from player import Player
-from map import Map, Node
+from map    import Map, Node
 # This is the main file for the game. It will be used to run the game and manage the game loop.
 
 class Game:
@@ -20,25 +20,24 @@ class Game:
         game_map = Map()
         
         # Create the nodes
-        alpha_node = Node("Crashpoint alpha"       , 0, 2, 1)
-        cime_node  = Node("Cimetière brumeuse"     , 0, 3, 0)
-        terr_node = Node("Terrier des phacochères", 1, 1, 3)
-        camp_node  = Node("Camps des survivants"   , 2, 2, 2)
-        foret_node = Node("Forêt des tambours"     , 2, 3, 1)
-        casc_node  = Node("Cascade brumeuse"       , 3, 1, 1)
+        self.alpha_node = Node("Crashpoint alpha"       , 0, 2, 1)        
+        self.cime_node  = Node("Cimetière brumeuse"     , 0, 3, 0)
+        self.terr_node  = Node("Terrier des phacochères", 1, 1, 3)
+        self.camp_node  = Node("Camps des survivants"   , 2, 2, 2)
+        self.foret_node = Node("Forêt des tambours"     , 2, 3, 1)
+        self.casc_node  = Node("Cascade brumeuse"       , 3, 1, 1)
         
+        # Set the player's position to the alpha node
+        self.player.set_position(self.alpha_node)
+         
         # Add the nodes to the map
-        game_map.add_node(alpha_node, cime_node)
-        game_map.add_node(alpha_node, foret_node)
-        
-        game_map.add_node(cime_node, terr_node)
-        
-        game_map.add_node(terr_node, camp_node)
-        
-        game_map.add_node(camp_node, foret_node)
-        game_map.add_node(camp_node, casc_node)
-        
-        game_map.add_node(foret_node, casc_node)
+        game_map.add_node(self.alpha_node, self.cime_node )
+        game_map.add_node(self.alpha_node, self.foret_node)
+        game_map.add_node(self.cime_node , self.terr_node )
+        game_map.add_node(self.terr_node , self.camp_node )        
+        game_map.add_node(self.camp_node , self.foret_node)
+        game_map.add_node(self.camp_node , self.casc_node )
+        game_map.add_node(self.foret_node, self.casc_node )
         
         return game_map
     
