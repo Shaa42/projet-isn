@@ -29,7 +29,30 @@ class Node:
         To print the name when represented in list
         """
         return f"{self.name}"
-
+    
+    def get_resources(self) -> dict[str, int]:
+        """
+        Get the resources of the node
+        """
+        return self.dic_resources
+    
+    def remove_water(self):
+        """
+        Remove water from the node
+        """
+        self.dic_resources["water"] = 0
+    
+    def remove_wood(self):
+        """
+        Remove wood from the node
+        """
+        self.dic_resources["wood"] = 0
+    
+    def remove_food(self):
+        """
+        Remove food from the node
+        """
+        self.dic_resources["food"] = 0
 
 
 class Map:
@@ -76,7 +99,15 @@ class Map:
             return self.dict_map[node]
         else:
             return []
-            
+    
+    def get_node_from_name(self, name:str) -> Node:
+        """
+        Get the node from its name
+        """
+        for node in self.dict_map.keys():
+            if node.name == name:
+                return node
+        return None
             
 if __name__ == "__main__":
     
@@ -95,4 +126,5 @@ if __name__ == "__main__":
     game_map.add_node(first_node, fourth_node)
     
     print(game_map)
-    print(game_map.dict_map[origin_node])
+    # print(game_map.dict_map[origin_node])
+    print(game_map.node_neighbors(first_node))
