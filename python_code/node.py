@@ -4,7 +4,7 @@ class Node:
     """
     def __init__(self, name:str, water:int, wood:int, food:int, events = None):
         """
-        Initialise a node with the availaible resources, the actual weather and the events that can occur
+        Initialise a node with the available resources, the actual weather and the events that can occur
         """
         self.name = name
         
