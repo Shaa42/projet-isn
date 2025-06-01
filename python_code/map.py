@@ -1,66 +1,11 @@
-class Node:
-    """
-    Node constituing the map
-    """
-    def __init__(self, name:str, water:int, wood:int, food:int, events = None, weather = None):
-        """
-        Initialise a node with the availaible resources, the actual weather and the events that can occur
-        """
-        self.name = name
-        
-        self.dic_resources : dict[str, int] = {
-            "water" : water,
-            "wood"  : wood,
-            "food"  : food
-        }
-        
-        self.events  = events # to update with event class
-        self.weather = weather # to update with weather class
-    
-    def __str__(self):
-        """
-        Print the name when used in print
-        """
-        # return f"water : {self.dic_resources["water"]}, wood : {self.dic_resources["wood"]}, food  : {self.dic_resources["food"]}"
-        return f"{self.name}"
-    
-    def __repr__(self):
-        """
-        To print the name when represented in list
-        """
-        return f"{self.name}"
-    
-    def get_resources(self) -> dict[str, int]:
-        """
-        Get the resources of the node
-        """
-        return self.dic_resources
-    
-    def remove_water(self):
-        """
-        Remove water from the node
-        """
-        self.dic_resources["water"] = 0
-    
-    def remove_wood(self):
-        """
-        Remove wood from the node
-        """
-        self.dic_resources["wood"] = 0
-    
-    def remove_food(self):
-        """
-        Remove food from the node
-        """
-        self.dic_resources["food"] = 0
-
+from node import Node
 
 class Map:
     """
-    An undiricted graph using the Node class
+    An undiricted weighted graph using the Node class
     """
     def __init__(self):
-        self.dict_map : dict[Node,list[Node]] = {} # Dictionnary linking the nodes
+        self.dict_map : dict[Node,dict[Node, int]] = {} # Dictionnary linking the nodes
         
     def __str__(self):
         _string = ""
@@ -68,35 +13,35 @@ class Map:
             _string += f"{key} -> {value}\n"
         return _string
         
-    def add_node(self, node1:Node, node2:Node):
+    def add_node(self, node1:Node, node2:Node, weight = 0) -> None:
         """
-        Link node1 and node2
+        Link node1 and node2 with each other in the map with a weight.
         """
         
         # link node1 to node2
         if self.dict_map.get(node1, 0):
-            self.dict_map[node1].append(node2)
+            self.dict_map[node1][node2] = weight
         else :
-            self.dict_map[node1] = [node2]
+            self.dict_map[node1] = {node2 : weight}
         
         # link node2 to node1
         if self.dict_map.get(node2, 0):
-            self.dict_map[node2].append(node1)
+            self.dict_map[node2][node1] = weight
         else :
-            self.dict_map[node2] = [node1]
+            self.dict_map[node2] = {node1 : weight}
         
     def node_exists(self, node:Node) -> bool:
         """
         Check if the node exists in the map
         """
-        return node in self.dict_map.keys()
+        return node in self.dict_map
     
     def node_neighbors(self, node:Node) -> list[Node]:
         """
         Return the neighbors of the node
         """
         if self.node_exists(node):
-            return self.dict_map[node]
+            return list(self.dict_map[node].keys())
         else:
             return []
     
@@ -108,6 +53,21 @@ class Map:
             if node.name == name:
                 return node
         return None
+    
+    def get_weight(self, player_pos:Node, other_node:Node) -> int:
+        """
+        Get the weight between the player's node and one of the neighbour's node
+        """
+        # print(self.node_neighbors(player_pos))
+        if other_node not in self.node_neighbors(player_pos):
+            return None
+
+        return self.dict_map[player_pos][other_node]
+        
+        
+            
+        
+        
             
 if __name__ == "__main__":
     
@@ -119,12 +79,13 @@ if __name__ == "__main__":
     third_node  = Node("map3", 1, 1, 1)
     fourth_node = Node("map4", 5, 0, 0)
     
-    game_map.add_node(origin_node, first_node)
+    game_map.add_node(origin_node, first_node, weight=42)
     game_map.add_node(origin_node, third_node)
     
     game_map.add_node(first_node, second_node)
     game_map.add_node(first_node, fourth_node)
     
     print(game_map)
-    # print(game_map.dict_map[origin_node])
     print(game_map.node_neighbors(first_node))
+    weight = game_map.get_weight(origin_node, first_node)
+    print(weight)

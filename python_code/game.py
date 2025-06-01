@@ -8,11 +8,9 @@ class Game:
     """
     
     def __init__(self):
-        self.player = Player()
+        self.player = Player(hunger=2)
         self.map = self.create_map()
-        
-        
-        
+           
     def create_map(self) -> Map:
         """
         Create the map for the game. It will be a graph of nodes.
@@ -32,13 +30,13 @@ class Game:
         self.player.set_position(self.alpha_node)
          
         # Add the nodes to the map
-        game_map.add_node(self.alpha_node, self.cime_node )
-        game_map.add_node(self.alpha_node, self.foret_node)
-        game_map.add_node(self.cime_node , self.terr_node )
-        game_map.add_node(self.terr_node , self.camp_node )        
-        game_map.add_node(self.camp_node , self.foret_node)
-        game_map.add_node(self.camp_node , self.casc_node )
-        game_map.add_node(self.foret_node, self.casc_node )
+        game_map.add_node(self.alpha_node, self.cime_node , weight=1)
+        game_map.add_node(self.alpha_node, self.foret_node, weight=1)
+        game_map.add_node(self.cime_node , self.terr_node , weight=1)
+        game_map.add_node(self.terr_node , self.camp_node , weight=1)        
+        game_map.add_node(self.camp_node , self.foret_node, weight=1)
+        game_map.add_node(self.camp_node , self.casc_node , weight=1)
+        game_map.add_node(self.foret_node, self.casc_node , weight=1)
         
         return game_map
     
@@ -70,26 +68,53 @@ class Game:
         print(f"Votre santé est de {self.player.health}")
         print(f"Votre faim est de {self.player.hunger}")
     
-    def input_move(self):
+    def input_move(self) -> None:
         """
         Ask the player to move to a new node.
         """
-        move = input("Où voulez-vous aller ? (entrez le nom du point de la carte) : ").strip()
-        print(f"DEBUG : {move}")
-        can_move = self.map.get_node_from_name(move) in self.map.node_neighbors(self.player.position)
-        print(f"DEBUG : {move}")
+        move = ""
+        move = input("Où voulez-vous aller ? (entrez le nom du point de la carte ; 'stay' pour rester) : ").strip()
         
+        # Allow the player to stay in the same position
+        if move == "stay":
+            move_cost = 0
+            print("Vous restez sur place.")
+            return
+        
+        # bool if the node neighbors
+        can_move = self.map.get_node_from_name(move) in self.map.node_neighbors(self.player.position)
 
-        # Check if the move is valid
+        # move the player
         if can_move:
-            print(f"DEBUG : {move}")
+            # Check if the player has enough resources to move
+            move_cost = self.map.get_weight(self.player.position, self.map.get_node_from_name(move))
+            
+            # Check if the player is sure to move
+            print(f"Le coût de déplacement vers {move} est de {move_cost} de faim.")
+            
+            while True:
+                ask_player = input(f"Êtes-vous sûr de vouloir vous déplacer vers {move} ? (oui/non) : ").strip().lower()
+                if ask_player == "non":
+                    print(f"Vous avez choisi de ne pas vous déplacer.")
+                    return
+                elif ask_player == "oui":
+                    break
+                else:
+                    print("Réponse invalide. Veuillez répondre par 'oui' ou 'non'.")
+
+            if self.player.get_hunger() >= move_cost:
+                # Remove the resources from the player
+                self.player.remove_hunger(move_cost)
+                print(f"Vous avez maintenant {self.player.hunger} de faim.")
+            else:
+                print("Vous n'avez pas assez de faim pour vous déplacer.")
+                self.input_move()
+                
             match move:
                 case "Crashpoint alpha":
                     self.player.set_position(self.alpha_node)
                 case "Cimetière brumeuse":
                     self.player.set_position(self.cime_node)
-                    print("here !")
-                    print(self.player.get_position())
                 case "Terrier des phacochères":
                     self.player.set_position(self.terr_node)
                 case "Camps des survivants":
@@ -98,8 +123,10 @@ class Game:
                     self.player.set_position(self.foret_node)
                 case "Cascade brumeuse":
                     self.player.set_position(self.casc_node)
-                    
             print(f"Vous vous déplacez vers {move}")
+
+                
+        # Return to the main loop
         else:
             print("Déplacement impossible !")
             print("Veuillez entrer un point de la carte valide.")
@@ -115,9 +142,9 @@ class Game:
             print("Il n'y a pas de ressources ici.")
             return
             
-        action = input("Que voulez-vous faire ? (Choix : 'bouffe', 'eau', 'bois') : ").strip()
+        action = input("Que voulez-vous faire ? (Choix : 'water', 'wood', 'food', 'manger') : ").strip()
         match action:
-            case "bouffe":
+            case "food":
                 if map_ressources["food"] > 0:
                     self.player.add_food(map_ressources["food"])
                     self.player.position.remove_food()
@@ -125,7 +152,7 @@ class Game:
                 else:
                         print("Il n'y a pas de nourriture ici.")
                         self.input_action()
-            case "eau":
+            case "water":
                 if map_ressources["water"] > 0:
                     self.player.add_water(map_ressources["water"])
                     self.player.position.remove_water()
@@ -133,7 +160,7 @@ class Game:
                 else:
                     print("Il n'y a pas d'eau ici.")
                     self.input_action()
-            case "bois":
+            case "wood":
                 if map_ressources["wood"] > 0:
                     self.player.add_wood(map_ressources["wood"])
                     self.player.position.remove_wood()
@@ -141,13 +168,19 @@ class Game:
                 else:
                     print("Il n'y a pas de bois ici.")
                     self.input_action()
+            case "manger":
+                if self.player.get_food() > 0:
+                    self.player.remove_food(1)
+                    self.player.add_hunger(1)
+                    print("Vous avez mangé de la nourriture.")
+                else:
+                    print("Vous n'avez pas de nourriture.")
+                    self.input_action()
             case _:
                 print("Action impossible !")
                 print("Veuillez entrer une action valide.")
                 self.input_action()
-
-
-                
+             
     def game_over(self) -> bool:
         """
         Check if the game is over.
@@ -155,9 +188,9 @@ class Game:
         if self.player.health <= 0:
             print("Vous êtes mort !")
             return True
-        # elif self.player.hunger <= 0:
-        #     print("Vous avez faim !")
-        #     return True
+        elif self.player.hunger <= 0:
+            print("Vous êtes mort de faim !")
+            return True
         # elif self.player.dic_resources["water"] <= 0:
         #     print("Vous êtes déshydraté !")
         #     return True
