@@ -6,7 +6,7 @@ class Player():
     """
     # To add : Player's position as a node of the map's graph
     
-    def __init__(self, health:int = 50, hunger:int = 5, water:int = 0, wood:int = 0, food:int = 0, position:Node = None) -> None: # add position
+    def __init__(self, health:int = 50, water:int = 0, wood:int = 0, food:int = 0, position:Node = None) -> None: # add position
         self.dic_resources : dict[str, int] = {
             "water" : water,
             "wood" : wood,
@@ -14,7 +14,7 @@ class Player():
         }
         
         self.health = health
-        self.hunger = hunger
+        # self.hunger = hunger
         self.position = position
         
     def __str__(self) -> str:
@@ -35,8 +35,8 @@ class Player():
     def add_health(self, amount:int) -> None:
         self.health += amount
         
-    def add_hunger(self, amount:int) -> None:
-        self.hunger += amount
+    # def add_hunger(self, amount:int) -> None:
+    #     self.hunger += amount
     
     # Methods to remove items from the player
     def remove_water(self, amount:int) -> None:
@@ -51,8 +51,16 @@ class Player():
     def remove_health(self, amount:int) -> None:
         self.health -= amount
         
-    def remove_hunger(self, amount:int) -> None:
-        self.hunger -= amount
+    # def remove_hunger(self, amount:int) -> None:
+    #     self.hunger -= amount
+        
+    def rm_from_weight(self, weight:tuple[int, int, int]) -> None:
+        """
+        Remove resources from the player based on the weight tuple.
+        """
+        self.remove_water(weight[0])
+        self.remove_wood(weight[1])
+        self.remove_food(weight[2])
         
     # Set the position of the player
     def set_position(self, position:Node) -> None:
@@ -78,11 +86,19 @@ class Player():
     def get_health(self) -> int:
         return self.health
     
-    def get_hunger(self) -> int:
-        return self.hunger
+    # def get_hunger(self) -> int:
+    #     return self.hunger
 
     def get_position(self) -> Node:
         return self.position
+    
+    def has_enough_resources(self, weight:tuple[int, int, int]) -> bool:
+        """
+        Check if the player has enough resources to perform an action.
+        """
+        return (self.get_water() >= weight[0] and
+                self.get_wood() >= weight[1] and
+                self.get_food() >= weight[2])
     
     
     # Debug/Printing methods

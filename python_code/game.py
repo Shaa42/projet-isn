@@ -1,6 +1,12 @@
+from time import sleep
+from threading import Thread
+import sys
+
+
+# Import classes from other modules
 from player import Player
 from map    import Map, Node
-# This is the main file for the game. It will be used to run the game and manage the game loop.
+
 
 class Game:
     """
@@ -8,9 +14,27 @@ class Game:
     """
     
     def __init__(self):
-        self.player = Player(hunger=2)
+        self.player = Player(water=3, food=3)
         self.map = self.create_map()
-           
+    
+    def timer(self, seconds: int):
+        """
+        Timer for the game. It will end the game after a certain time.
+        This is a separate thread that will run in the background.
+        """
+        self.time:list[int] = [seconds] # Temps en secondes
+        while self.time[0] > 0:
+            sleep(1)
+            self.time[0] -= 1
+        self.isRunning = False
+        print("\n\n")
+        print("Une tempête a éclaté et vous n'avez pas réussi à vous abriter à temps !")
+        print("Vous êtes mort !")
+        sys.exit(0)  # Exit the game when the timer ends
+        
+
+        
+
     def create_map(self) -> Map:
         """
         Create the map for the game. It will be a graph of nodes.
@@ -30,14 +54,14 @@ class Game:
         self.player.set_position(self.alpha_node)
          
         # Add the nodes to the map
-        game_map.add_node(self.alpha_node, self.cime_node , weight=1)
-        game_map.add_node(self.alpha_node, self.foret_node, weight=1)
-        game_map.add_node(self.cime_node , self.terr_node , weight=1)
-        game_map.add_node(self.terr_node , self.camp_node , weight=1)        
-        game_map.add_node(self.camp_node , self.foret_node, weight=1)
-        game_map.add_node(self.camp_node , self.casc_node , weight=1)
-        game_map.add_node(self.foret_node, self.casc_node , weight=1)
-        
+        game_map.add_node(self.alpha_node, self.cime_node , weight=(1, 0, 1))
+        game_map.add_node(self.alpha_node, self.foret_node, weight=(2, 0, 1))
+        game_map.add_node(self.cime_node , self.terr_node , weight=(1, 1, 1))
+        game_map.add_node(self.terr_node , self.camp_node , weight=(1, 1, 1))
+        game_map.add_node(self.camp_node , self.foret_node, weight=(1, 1, 1))
+        game_map.add_node(self.camp_node , self.casc_node , weight=(1, 1, 1))
+        game_map.add_node(self.foret_node, self.casc_node , weight=(1, 1, 1))
+
         return game_map
     
     def intro(self):
@@ -50,6 +74,7 @@ class Game:
         print("Vous pouvez vous déplacer entre les différents points de l'île.")
         print("Vous pouvez également interagir avec les objets et les autres survivants.")
         print("Bonne chance !")
+        print("")
     
     def log_move(self):
         """
@@ -66,7 +91,7 @@ class Game:
         """
         print(f"Vos ressources sont : {self.player.dic_resources}")
         print(f"Votre santé est de {self.player.health}")
-        print(f"Votre faim est de {self.player.hunger}")
+        # print(f"Votre faim est de {self.player.hunger}")
     
     def input_move(self) -> None:
         """
@@ -88,10 +113,10 @@ class Game:
         if can_move:
             # Check if the player has enough resources to move
             move_cost = self.map.get_weight(self.player.position, self.map.get_node_from_name(move))
+            wat_cost, wood_cost, food_cost = move_cost
             
             # Check if the player is sure to move
-            print(f"Le coût de déplacement vers {move} est de {move_cost} de faim.")
-            
+            print(f"Le coût de déplacement vers {move} est de {wat_cost} d'eau, {wood_cost} de bois et {food_cost} de nourriture.")
             while True:
                 ask_player = input(f"Êtes-vous sûr de vouloir vous déplacer vers {move} ? (oui/non) : ").strip().lower()
                 if ask_player == "non":
@@ -102,12 +127,13 @@ class Game:
                 else:
                     print("Réponse invalide. Veuillez répondre par 'oui' ou 'non'.")
 
-            if self.player.get_hunger() >= move_cost:
+
+            if self.player.has_enough_resources(move_cost):
                 # Remove the resources from the player
-                self.player.remove_hunger(move_cost)
-                print(f"Vous avez maintenant {self.player.hunger} de faim.")
+                self.player.rm_from_weight(move_cost)
+                print(f"Vous avez dépensé {wat_cost} d'eau, {wood_cost} de bois et {food_cost} de nourriture pour vous déplacer.")
             else:
-                print("Vous n'avez pas assez de faim pour vous déplacer.")
+                print("Vous n'avez pas assez de ressources pour vous déplacer.")
                 self.input_move()
                 
             match move:
@@ -142,7 +168,7 @@ class Game:
             print("Il n'y a pas de ressources ici.")
             return
             
-        action = input("Que voulez-vous faire ? (Choix : 'water', 'wood', 'food', 'manger') : ").strip()
+        action = input("Que voulez-vous faire ? (Choix : 'water', 'wood', 'food') : ").strip()
         match action:
             case "food":
                 if map_ressources["food"] > 0:
@@ -168,14 +194,6 @@ class Game:
                 else:
                     print("Il n'y a pas de bois ici.")
                     self.input_action()
-            case "manger":
-                if self.player.get_food() > 0:
-                    self.player.remove_food(1)
-                    self.player.add_hunger(1)
-                    print("Vous avez mangé de la nourriture.")
-                else:
-                    print("Vous n'avez pas de nourriture.")
-                    self.input_action()
             case _:
                 print("Action impossible !")
                 print("Veuillez entrer une action valide.")
@@ -185,25 +203,29 @@ class Game:
         """
         Check if the game is over.
         """
-        if self.player.health <= 0:
+        if self.player.get_health() <= 0:
             print("Vous êtes mort !")
             return True
-        elif self.player.hunger <= 0:
+        if self.player.get_food() <= 0:
             print("Vous êtes mort de faim !")
             return True
-        # elif self.player.dic_resources["water"] <= 0:
-        #     print("Vous êtes déshydraté !")
-        #     return True
+        if self.player.get_water() <= 0:
+            print("Vous êtes mort de soif !")
+            return True
         else:
             return False
     
     def main(self):
+        # Set the timer thread for 30 seconds
+        timer_thread = Thread(target=self.timer, args=(30,))
+        timer_thread.start()
+        
         # Introduction
-        isRunning = True
+        self.isRunning = True
         self.intro()
         print("")
         # Boucle de jeu
-        while isRunning:
+        while self.isRunning:
             # Deplacement du joueur
             
             # Afficher la carte
@@ -211,6 +233,9 @@ class Game:
             
             # Afficher les déplacements possibles
             self.log_move()
+            
+            # Afficher le temps restant
+            print(f"Il vous reste {self.time[0]} secondes !")
             
             # Afficher les ressources du joueur
             self.log_player()
