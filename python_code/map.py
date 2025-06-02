@@ -5,7 +5,7 @@ class Map:
     An undiricted weighted graph using the Node class
     """
     def __init__(self):
-        self.dict_map : dict[Node,dict[Node, int]] = {} # Dictionnary linking the nodes
+        self.dict_map : dict[Node,dict[Node, tuple[int, int, int]]] = {} # Dictionnary linking the nodes
         
     def __str__(self):
         _string = ""
@@ -13,7 +13,7 @@ class Map:
             _string += f"{key} -> {value}\n"
         return _string
         
-    def add_node(self, node1:Node, node2:Node, weight = 0) -> None:
+    def add_node(self, node1:Node, node2:Node, weight:tuple[int, int, int] = (0, 0, 0)) -> None:
         """
         Link node1 and node2 with each other in the map with a weight.
         """
