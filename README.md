@@ -67,7 +67,15 @@ Nous avons choisi une approche en **programmation orientée objet (POO)** pour s
 
 ### Installation
 
-```bash
 git clone https://github.com/TON_COMPTE/Crash-Point-INSA.git
 cd Crash-Point-INSA
 pip install -r requirements.txt
+
+## Répartition des points du groupe
+- Ryan Vigoureux - 0,5
+- Antoine Fromentel - 0,2
+- Baptiste Grateau - 0,1
+- Jiayi Wang - 0,1
+- Hanzi Jiang - 0,1
+
+
