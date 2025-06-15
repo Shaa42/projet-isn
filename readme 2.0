@@ -7,7 +7,7 @@ Ce README décrit la structure et le fonctionnement du jeu. Bonne lecture !
 
 ---
 
-## 🕹️ Principe du jeu
+## Principe du jeu
 
 Le joueur débute le jeu à **Crash Point** avec quelques ressources.
 
@@ -20,7 +20,7 @@ Le joueur débute le jeu à **Crash Point** avec quelques ressources.
 
 ---
 
-## 🧩 I. Explication du projet
+## Explication du projet
 
 Pour concevoir notre jeu, nous nous sommes basés sur le jeu de cartes **Galérapagos**, en en extrayant les éléments clés :  
 ressources, lieux, interactions, et dynamique de tour par tour.
