@@ -70,9 +70,16 @@ Code pour l'interface graphique. Permet d'introduire la logique dans une fenêtr
 
 ### Installation
 
+Copie le dépôt à l'aide de git.
 ```sh
 git clone https://github.com/TON_COMPTE/Crash-Point-INSA.git
+```
+Accède au dossier.
+```sh
 cd Crash-Point-INSA
+```
+Installe les dépendances nécessaires au fonctionnement du jeu.
+```sh
 pip install -r requirements.txt
 ```
 
