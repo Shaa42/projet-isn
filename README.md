@@ -57,6 +57,9 @@ Nous avons choisi une approche en **programmation orientée objet (POO)** pour s
 - `map.py`  
   Représente l’île comme un **graphe pondéré non orienté**.  
   Chaque lieu est un **nœud**, chaque trajet a un **coût** en ressources.
+  
+-`gui.py`
+Code pour l'interface graphique. Permet d'introduire la logique dans une fenêtre et gère les entrées du joueur.
 
 ## III. Comment jouer au jeu ?
 
@@ -67,9 +70,11 @@ Nous avons choisi une approche en **programmation orientée objet (POO)** pour s
 
 ### Installation
 
+```sh
 git clone https://github.com/TON_COMPTE/Crash-Point-INSA.git
 cd Crash-Point-INSA
 pip install -r requirements.txt
+```
 
 ## Répartition des points du groupe
 - Ryan Vigoureux - 0,5
