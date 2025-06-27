@@ -76,7 +76,7 @@ git clone https://github.com/Shaa42/projet-isn.git
 ```
 Accède au dossier.
 ```sh
-cd Crash-Point-INSA
+cd projet-isn
 ```
 Installe les dépendances nécessaires au fonctionnement du jeu.
 ```sh
